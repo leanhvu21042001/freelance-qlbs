@@ -54,7 +54,7 @@ exports.seed = function (knex) {
       // Insert seed entries for users
       .then(() =>
         knex("users").insert([
-          { id: 1, username: "admin", password: "admin123" },
+          { id: 1, username: "admin@gmail.com", password: "123123" },
           // Add more users as needed
         ])
       )

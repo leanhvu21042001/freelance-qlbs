@@ -64,7 +64,7 @@ class BooksController {
   async deleteBookById(req, res) {
     const bookId = req.params.id;
     try {
-      await booksService.delete(bookId);
+      await booksService.softDelete(bookId);
       res.status(200).json({ message: "Book deleted successfully" });
     } catch (error) {
       console.error("Error deleting book:", error);

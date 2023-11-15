@@ -30,6 +30,15 @@ class BooksService {
     }
   }
 
+  async softDelete(bookId) {
+    try {
+      await knex("books").where("id", bookId).update({ deleted: true });
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      throw error;
+    }
+  }
+
   async update(bookId, newData) {
     try {
       await knex("books").where("id", bookId).update(newData);
@@ -41,7 +50,10 @@ class BooksService {
 
   async show(bookId) {
     try {
-      const book = await knex("books").where("id", bookId).first();
+      const book = await knex("books")
+        .where("id", bookId)
+        .andWhere("books.deleted", false)
+        .first();
       return book;
     } catch (error) {
       console.error("Error retrieving book:", error);
@@ -51,7 +63,10 @@ class BooksService {
 
   async list() {
     try {
-      const books = await knex("books").select("*");
+      const books = await knex("books")
+        .leftJoin("authors", "books.author_id", "=", "authors.id")
+        .andWhere("books.deleted", false)
+        .options({ nestTables: true });
       return books;
     } catch (error) {
       console.error("Error listing books:", error);
