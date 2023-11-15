@@ -66,7 +66,7 @@ class UsersController {
   async deleteUserById(req, res) {
     const userId = req.params.id;
     try {
-      await usersService.delete(userId);
+      await usersService.softDelete(userId);
       res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
       console.error("Error deleting user:", error);

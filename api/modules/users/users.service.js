@@ -41,7 +41,10 @@ class UsersService {
 
   async show(userId) {
     try {
-      const user = await knex("users").where("id", userId).first();
+      const user = await knex("users")
+        .where("id", userId)
+        .andWhere("users.deleted", false)
+        .first();
       delete user.password;
       return user;
     } catch (error) {
@@ -52,7 +55,9 @@ class UsersService {
 
   async list() {
     try {
-      const users = await knex("users").select("*");
+      const users = await knex("users")
+        .select("*")
+        .where("users.deleted", false);
       return users;
     } catch (error) {
       console.error("Error listing users:", error);
@@ -70,6 +75,15 @@ class UsersService {
       return user;
     } catch (error) {
       console.error("Error listing users:", error);
+      throw error;
+    }
+  }
+
+  async softDelete(userId) {
+    try {
+      await knex("users").where("id", userId).update({ deleted: true });
+    } catch (error) {
+      console.error("Error deleting user:", error);
       throw error;
     }
   }
