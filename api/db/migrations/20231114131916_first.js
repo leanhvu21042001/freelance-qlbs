@@ -45,7 +45,6 @@ exports.up = function (knex) {
     })
     .createTable("book_order", function (table) {
       table.increments("id").primary();
-      table.string("title");
       table.integer("book_id").unsigned().references("id").inTable("books");
       table.integer("order_id").unsigned().references("id").inTable("orders");
       table.boolean("deleted").defaultTo(false);

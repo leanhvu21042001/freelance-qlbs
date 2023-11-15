@@ -9,6 +9,7 @@ import CustomerEdit from "./CustomerEdit.vue";
 import Users from "./Users.vue";
 import UserEdit from "./UserEdit.vue";
 import Orders from "./Orders.vue";
+import OrderDetail from "./OrderDetail.vue";
 import NotFound from "./NotFound.vue";
 import Login from "./Login.vue";
 import { getMe } from "../services/users";
@@ -23,6 +24,7 @@ const routes = [
   { path: "/users", name: "Users", component: Users },
   { path: "/users/:id", component: UserEdit },
   { path: "/orders", name: "Orders", component: Orders },
+  { path: "/orders/:id", component: OrderDetail },
   { path: "/login", name: "Login", component: Login },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
 ];

@@ -4,6 +4,7 @@ const cors = require("cors");
 const authorsRoute = require("./modules/authors/authors.route");
 const booksRoute = require("./modules/books/books.route");
 const customersRoute = require("./modules/customers/customers.route");
+const ordersRoute = require("./modules/orders/orders.route");
 const usersRoute = require("./modules/users/users.route");
 const errorHandler = require("./utils/error-handler.utils");
 const notFoundMiddleware = require("./utils/not-found.utils");
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(authorsRoute);
 app.use(booksRoute);
 app.use(customersRoute);
+app.use(ordersRoute);
 app.use(usersRoute);
 
 // error handling

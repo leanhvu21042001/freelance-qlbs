@@ -1,5 +1,5 @@
 const ordersService = require("./orders.service"); // Assuming you have an orders service
-
+const bookOrderService = require("../book_order/book_order.service");
 class OrdersController {
   static instance = null;
 
@@ -38,8 +38,9 @@ class OrdersController {
     const orderId = req.params.id;
     try {
       const order = await ordersService.show(orderId);
+      const books = await bookOrderService.booksByOrderId(orderId);
       if (order) {
-        res.status(200).json(order);
+        res.status(200).json({ order, books });
       } else {
         res.status(404).json({ error: "Order not found" });
       }
@@ -64,22 +65,12 @@ class OrdersController {
   async deleteOrderById(req, res) {
     const orderId = req.params.id;
     try {
-      await ordersService.delete(orderId);
+      await ordersService.softDelete(orderId);
       res.status(200).json({ message: "Order deleted successfully" });
     } catch (error) {
       console.error("Error deleting order:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
-  }
-
-  async loginUser(req, res) {
-    // This method might not be relevant for orders; consider removing or modifying accordingly
-    res.status(404).json({ error: "Not found" });
-  }
-
-  async getMe(req, res) {
-    // This method might not be relevant for orders; consider removing or modifying accordingly
-    res.status(404).json({ error: "Not found" });
   }
 }
 
