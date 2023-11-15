@@ -42,6 +42,7 @@ class UsersService {
   async show(userId) {
     try {
       const user = await knex("users").where("id", userId).first();
+      delete user.password;
       return user;
     } catch (error) {
       console.error("Error retrieving user:", error);
@@ -53,6 +54,20 @@ class UsersService {
     try {
       const users = await knex("users").select("*");
       return users;
+    } catch (error) {
+      console.error("Error listing users:", error);
+      throw error;
+    }
+  }
+
+  async authenticate(username, password) {
+    try {
+      const user = await knex("users")
+        .select("*")
+        .where("username", username)
+        .andWhere("password", password)
+        .first();
+      return user;
     } catch (error) {
       console.error("Error listing users:", error);
       throw error;

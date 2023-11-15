@@ -9,7 +9,7 @@ const errorHandler = require("./utils/error-handler.utils");
 const notFoundMiddleware = require("./utils/not-found.utils");
 
 const app = express();
-const port = 3000;
+const port = 5000;
 
 // setup middleware
 app.use(cors());

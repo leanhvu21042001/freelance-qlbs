@@ -4,12 +4,12 @@ const UsersController = require("./users.controller");
 const verifyToken = require("../../middlewares/verify-token.middleware");
 
 // Create a new user
-router.post("/users", async (req, res) => UsersController.createUser(req, res));
+router.post("/users", verifyToken, async (req, res) =>
+  UsersController.createUser(req, res)
+);
 
 // Get all users (requires authentication)
-router.get("/users", verifyToken, async (req, res) =>
-  UsersController.getUsers(req, res)
-);
+router.get("/users", async (req, res) => UsersController.getUsers(req, res));
 
 // Get a specific user by ID (requires authentication)
 router.get("/users/:id", verifyToken, async (req, res) =>
