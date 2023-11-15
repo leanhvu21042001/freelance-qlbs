@@ -64,7 +64,7 @@ class CustomersController {
   async deleteCustomerById(req, res) {
     const customerId = req.params.id;
     try {
-      await customersService.delete(customerId);
+      await customersService.softDelete(customerId);
       res.status(200).json({ message: "Customer deleted successfully" });
     } catch (error) {
       console.error("Error deleting customer:", error);

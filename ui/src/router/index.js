@@ -5,6 +5,7 @@ import BookEdit from "./BookEdit.vue";
 import Authors from "./Authors.vue";
 import AuthorEdit from "./AuthorEdit.vue";
 import Customers from "./Customers.vue";
+import CustomerEdit from "./CustomerEdit.vue";
 import Users from "./Users.vue";
 import Orders from "./Orders.vue";
 import NotFound from "./NotFound.vue";
@@ -17,6 +18,7 @@ const routes = [
   { path: "/authors", name: "Authors", component: Authors },
   { path: "/authors/:id", component: AuthorEdit },
   { path: "/customers", name: "Customers", component: Customers },
+  { path: "/customers/:id", component: CustomerEdit },
   { path: "/users", name: "Users", component: Users },
   { path: "/orders", name: "Orders", component: Orders },
   { path: "/login", name: "Login", component: Login },

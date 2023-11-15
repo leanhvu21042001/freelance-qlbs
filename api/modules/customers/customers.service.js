@@ -41,7 +41,10 @@ class CustomersService {
 
   async show(customerId) {
     try {
-      const customer = await knex("customers").where("id", customerId).first();
+      const customer = await knex("customers")
+        .where("id", customerId)
+        .andWhere("customers.deleted", false)
+        .first();
       return customer;
     } catch (error) {
       console.error("Error retrieving customer:", error);
@@ -51,10 +54,21 @@ class CustomersService {
 
   async list() {
     try {
-      const customers = await knex("customers").select("*");
+      const customers = await knex("customers")
+        .select("*")
+        .where("customers.deleted", false);
       return customers;
     } catch (error) {
       console.error("Error listing customers:", error);
+      throw error;
+    }
+  }
+
+  async softDelete(customerId) {
+    try {
+      await knex("customers").where("id", customerId).update({ deleted: true });
+    } catch (error) {
+      console.error("Error deleting customer:", error);
       throw error;
     }
   }

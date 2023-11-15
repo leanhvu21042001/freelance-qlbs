@@ -1,21 +1,27 @@
 <script setup>
-import { useMutation } from "@tanstack/vue-query";
-import { createAuthor } from "../../services/authors";
+import { useMutation, useQuery } from "@tanstack/vue-query";
+import { createCustomer, getCustomers } from "../../services/customers";
 import { ref } from "vue";
 
-const { refetchAuthors } = defineProps(["refetchAuthors"]);
+const { refetchCustomers } = defineProps(["refetchCustomers"]);
 
 const nameInput = ref("");
+const emailInput = ref("");
+const phoneInput = ref("");
 
 const { mutate } = useMutation({
-  mutationFn: createAuthor,
+  mutationFn: createCustomer,
   onSuccess: () => {
-    refetchAuthors();
+    refetchCustomers();
   },
 });
 
 function handleSubmit(event) {
-  mutate({ name: nameInput.value });
+  mutate({
+    name: nameInput.value,
+    email: emailInput.value,
+    phone: phoneInput.value,
+  });
   event.target.reset();
 }
 </script>
@@ -44,7 +50,7 @@ function handleSubmit(event) {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
-              Create new Author
+              Create new Customer
             </h5>
             <button
               type="button"
@@ -62,7 +68,29 @@ function handleSubmit(event) {
                   type="text"
                   class="form-control"
                   id="title"
-                  placeholder="Author name"
+                  placeholder="Customer name"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="title" class="form-label">Email</label>
+                <input
+                  v-model="emailInput"
+                  type="email"
+                  class="form-control"
+                  id="title"
+                  placeholder="Customer email"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="title" class="form-label">phone</label>
+                <input
+                  v-model="phoneInput"
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  placeholder="Customer phone"
                 />
               </div>
 
