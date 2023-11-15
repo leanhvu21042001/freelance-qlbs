@@ -22,7 +22,6 @@ const { data: authors } = useQuery({
 });
 
 watchEffect(() => {
-  console.log("hihi", book.value);
   if (book.value) {
     titleInput.value = book.value.title;
     authorSelect.value = book.value.author_id;

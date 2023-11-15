@@ -64,7 +64,7 @@ class AuthorsController {
   async deleteAuthorById(req, res) {
     const authorId = req.params.id;
     try {
-      await authorsService.delete(authorId);
+      await authorsService.softDelete(authorId);
       res.status(200).json({ message: "Author deleted successfully" });
     } catch (error) {
       console.error("Error deleting author:", error);

@@ -1,19 +1,19 @@
 <script setup>
 import { useMutation } from "@tanstack/vue-query";
 
-import { deleteBook } from "../../services/books";
+import { deleteAuthor } from "../../services/authors";
 
-const { books, refetchBooks } = defineProps(["books", "refetchBooks"]);
+const { authors, refetchAuthors } = defineProps(["authors", "refetchAuthors"]);
 
 const { mutate } = useMutation({
-  mutationFn: deleteBook,
+  mutationFn: deleteAuthor,
   onSuccess: () => {
-    refetchBooks();
+    refetchAuthors();
   },
 });
 
-const handleDeleteBook = (bookId) => {
-  mutate(bookId);
+const handleDeleteAuthor = (authorId) => {
+  mutate(authorId);
 };
 </script>
 
@@ -22,27 +22,25 @@ const handleDeleteBook = (bookId) => {
     <thead>
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Book Title</th>
         <th scope="col">Author</th>
         <th scope="col">Handle</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(book, index) in books" :key="index">
-        <th scope="row">#{{ book.books.id }}</th>
-        <td>{{ book.books.title }}</td>
-        <td>{{ book.authors.name }}</td>
+      <tr v-for="(author, index) in authors" :key="index">
+        <th scope="row">#{{ author.id }}</th>
+        <td>{{ author.name }}</td>
         <td>
           <router-link
             class="nav-link"
             aria-current="page"
-            :to="`/books/${book.books.id}`"
+            :to="`/authors/${author.id}`"
           >
             <button class="mx-1 btn btn-warning">Edit</button></router-link
           >
 
           <button
-            @click="() => handleDeleteBook(book.books.id)"
+            @click="() => handleDeleteAuthor(author.id)"
             class="mx-1 btn btn-danger"
           >
             Delete

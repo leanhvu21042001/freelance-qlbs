@@ -41,7 +41,10 @@ class AuthorsService {
 
   async show(authorId) {
     try {
-      const author = await knex("authors").where("id", authorId).first();
+      const author = await knex("authors")
+        .where("id", authorId)
+        .andWhere("authors.deleted", false)
+        .first();
       return author;
     } catch (error) {
       console.error("Error retrieving author:", error);
@@ -51,10 +54,21 @@ class AuthorsService {
 
   async list() {
     try {
-      const authors = await knex("authors").select("*");
+      const authors = await knex("authors")
+        .select("*")
+        .where("authors.deleted", false);
       return authors;
     } catch (error) {
       console.error("Error listing authors:", error);
+      throw error;
+    }
+  }
+
+  async softDelete(authorId) {
+    try {
+      await knex("authors").where("id", authorId).update({ deleted: true });
+    } catch (error) {
+      console.error("Error deleting author:", error);
       throw error;
     }
   }

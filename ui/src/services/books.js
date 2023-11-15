@@ -2,7 +2,6 @@ import request from "./request";
 
 export const getSingleBook = async (bookId) => {
   const res = await request.get(`/books/${bookId}`);
-  console.log(res);
   return res;
 };
 
