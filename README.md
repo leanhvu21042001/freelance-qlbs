@@ -1,30 +1,13 @@
-# freelance-qlbs
+# freelance Quản lý bán sách.
 
-## Quy trình quản lý bán sách:
+> **Notes:** Người dùng sẽ đăng nhập vào hệ thống, thêm xóa, sửa: sách, khách hàng, tác giả, hóa đơn.
 
-- b1: Đăng nhập hệ thống
-- b2: danh sách các quyển sách tồn kho.
-- b3: tìm kiếm sách.
-- b4: Xác nhận khách hàng mua sách.
-- b5: Hiển thị orders.
+## Yêu cầu
 
-## Models
-
-- User
-- Book
-- Order
-
-## Relationships
-
-- User (1-n) Book (user_id)
-- User (1-n) Order (user_id)
-
-## Features
-
-- User: Login,
--
-
-> đăng nhập.
-> nhập thông tin khách hàng.
-> chọn sách khách hàng mua.
-> lưu hóa đơn.
+- [x] 2-5 bảng dữ liệu. có ít nhất một mối quan hệ. (authors, books, customers, orders, users)
+- [x] giao diện trên 4. chia nhỏ component.(authors, books, customers, orders, users)
+- [ ] Xử lý form nhập liệu.
+- [x] Có sự kiện điều hướng các trang. (vue-router)
+- [x] Có quản lý trang thái với composable, provide/inject, pinia, hoặc tanstack query. (tanstack query, composable, provide/inject)
+- [x] API dạng RestAPI. dữ liệu trao đổi là json. (đọc và cập nhập dữ liệu). (axios)
+- [x] công nghệ bắt buộc: Node.js+Expres, Knex.js, MySQL/MariaDB cho backend. Vue.js 3 cho front end. có sử dụng thư viện. (BE: Node.js+Expres, Knex.js, MySQL/MariaDB; FE: Vue.js 3, Bootstrap5)
