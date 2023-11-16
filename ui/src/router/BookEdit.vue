@@ -2,14 +2,23 @@
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import { getAuthors } from "../services/authors";
 import { editBook, getSingleBook } from "../services/books";
-import { ref, watchEffect } from "vue";
+import { reactive, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
-
+import { required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
 const route = useRoute();
 
 const bookId = ref(route.params.id);
-const authorSelect = ref(1);
-const titleInput = ref("");
+const formData = reactive({
+  author: undefined,
+  title: "",
+});
+const rules = {
+  author: { required },
+  title: { required },
+};
+
+const v$ = useVuelidate(rules, formData);
 
 const { data: book } = useQuery({
   queryKey: ["get-book", bookId.value],
@@ -23,8 +32,8 @@ const { data: authors } = useQuery({
 
 watchEffect(() => {
   if (book.value) {
-    titleInput.value = book.value.title;
-    authorSelect.value = book.value.author_id;
+    formData.title = book.value.title;
+    formData.author = book.value.author_id;
   }
 });
 
@@ -32,11 +41,13 @@ const { mutate } = useMutation({
   mutationFn: editBook,
 });
 
-function handleSubmit(event) {
+async function handleSubmit() {
+  const result = await v$.value.$validate();
+  if (!result) return;
   mutate({
     bookId: bookId.value,
-    title: titleInput.value,
-    author_id: authorSelect.value,
+    title: formData.title,
+    author_id: formData.author,
   });
 }
 </script>
@@ -51,12 +62,19 @@ function handleSubmit(event) {
           <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input
-              v-model="titleInput"
+              v-model="formData.title"
               type="text"
               class="form-control"
               id="title"
               placeholder="Book title"
             />
+            <span
+              class="text-danger"
+              v-for="error in v$.title.$errors"
+              :key="error.$uid"
+            >
+              {{ error.$message }}
+            </span>
           </div>
 
           <label for="Author" class="form-label">Author</label>
@@ -64,7 +82,7 @@ function handleSubmit(event) {
             id="Author"
             class="form-select"
             aria-label="select authors"
-            v-model="authorSelect"
+            v-model="formData.author"
           >
             <option :disabled="true" :selected="true">Select Author</option>
             <option
@@ -74,15 +92,17 @@ function handleSubmit(event) {
             >
               {{ authorOption.name }}
             </option>
+            <span
+              class="text-danger"
+              v-for="error in v$.author.$errors"
+              :key="error.$uid"
+            >
+              {{ error.$message }}
+            </span>
           </select>
 
           <button class="btn btn-primary w-100 mt-4" type="submit">Save</button>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
       </div>
     </div>
   </div>

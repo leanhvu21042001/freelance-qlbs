@@ -71,9 +71,9 @@ exports.seed = function (knex) {
       // Insert seed entries for book_order
       .then(() =>
         knex("book_order").insert([
-          { id: 1, title: "Book Order 1", book_id: 1, order_id: 1 },
-          { id: 2, title: "Book Order 2", book_id: 2, order_id: 1 },
-          { id: 3, title: "Book Order 3", book_id: 3, order_id: 2 },
+          { id: 1, book_id: 1, order_id: 1 },
+          { id: 2, book_id: 2, order_id: 1 },
+          { id: 3, book_id: 3, order_id: 2 },
           // Add more book_order entries as needed
         ])
       )

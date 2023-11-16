@@ -1,13 +1,23 @@
 <script setup>
 import { useMutation, useQuery } from "@tanstack/vue-query";
-import { ref, watchEffect } from "vue";
+import { reactive, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import { editAuthor, getSingleAuthor } from "../services/authors";
+import { required, minLength, email } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
 
 const route = useRoute();
 
 const authorId = ref(route.params.id);
-const nameInput = ref("");
+const formData = reactive({
+  name: "",
+});
+
+const rules = {
+  name: { required, minLength: minLength(6) },
+};
+
+const v$ = useVuelidate(rules, formData);
 
 const { data: author } = useQuery({
   queryKey: ["get-author", authorId.value],
@@ -16,7 +26,7 @@ const { data: author } = useQuery({
 
 watchEffect(() => {
   if (author.value) {
-    nameInput.value = author.value.name;
+    formData.name = author.value.name;
   }
 });
 
@@ -24,10 +34,13 @@ const { mutate } = useMutation({
   mutationFn: editAuthor,
 });
 
-function handleSubmit() {
+async function handleSubmit() {
+  const result = await v$.value.$validate();
+  if (!result) return;
+
   mutate({
     authorId: authorId.value,
-    name: nameInput.value,
+    name: formData.name,
   });
 }
 </script>
@@ -42,21 +55,23 @@ function handleSubmit() {
           <div class="mb-3">
             <label for="name" class="form-label">Name</label>
             <input
-              v-model="nameInput"
+              v-model="formData.name"
               type="text"
               class="form-control"
               id="name"
               placeholder="Author name"
             />
+            <span
+              class="text-danger"
+              v-for="error in v$.name.$errors"
+              :key="error.$uid"
+            >
+              {{ error.$message }}
+            </span>
           </div>
 
           <button class="btn btn-primary w-100 mt-4" type="submit">Save</button>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
       </div>
     </div>
   </div>

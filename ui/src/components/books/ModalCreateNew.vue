@@ -2,12 +2,22 @@
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import { getAuthors } from "../../services/authors";
 import { createBook } from "../../services/books";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
+import { required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
 
 const { refetchBooks } = defineProps(["refetchBooks"]);
 
-const authorSelect = ref(1);
-const titleInput = ref('');
+const formData = reactive({
+  author: "",
+  title: "",
+});
+const rules = {
+  author: { required },
+  title: { required },
+};
+
+const v$ = useVuelidate(rules, formData);
 
 const { data: authors } = useQuery({
   queryKey: ["authors"],
@@ -21,9 +31,14 @@ const { mutate } = useMutation({
   },
 });
 
-function handleSubmit(event) {
-  mutate({ title: titleInput.value, author_id: authorSelect.value });
-  event.target.reset();
+async function handleSubmit(event) {
+  const result = await v$.value.$validate();
+
+  if (!result) return;
+
+  mutate({ title: formData.title, author_id: formData.author });
+  formData.author = "";
+  formData.title = "";
 }
 </script>
 
@@ -63,28 +78,48 @@ function handleSubmit(event) {
               <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <input
-                  v-model="titleInput"
+                  v-model="formData.title"
                   type="text"
                   class="form-control"
                   id="title"
                   placeholder="Book title"
                 />
+                <span
+                  class="text-danger"
+                  v-for="error in v$.title.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
               </div>
 
-              <select
-                class="form-select"
-                aria-label="select authors"
-                v-model="authorSelect"
-              >
-                <option :disabled="true" :selected="true">Select Author</option>
-                <option
-                  v-for="(authorOption, index) in authors"
-                  :key="authorOption.id"
-                  :value="authorOption.id"
+              <div class="mb-3">
+                <label for="Author" class="form-label">Author</label>
+                <select
+                  id="Author"
+                  class="form-select"
+                  aria-label="select authors"
+                  v-model="formData.author"
                 >
-                  {{ authorOption.name }}
-                </option>
-              </select>
+                  <option :disabled="true" :selected="true">
+                    Select Author
+                  </option>
+                  <option
+                    v-for="(authorOption, index) in authors"
+                    :key="authorOption.id"
+                    :value="authorOption.id"
+                  >
+                    {{ authorOption.name }}
+                  </option>
+                </select>
+                <span
+                  class="text-danger"
+                  v-for="error in v$.author.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
+              </div>
 
               <button class="btn btn-primary w-100 mt-4" type="submit">
                 Save

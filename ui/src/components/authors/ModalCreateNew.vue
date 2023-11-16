@@ -1,11 +1,20 @@
 <script setup>
 import { useMutation } from "@tanstack/vue-query";
 import { createAuthor } from "../../services/authors";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
+import { required, minLength, email } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
 
 const { refetchAuthors } = defineProps(["refetchAuthors"]);
 
-const nameInput = ref("");
+const formData = reactive({
+  name: "",
+});
+const rules = {
+  name: { required, minLength: minLength(6) },
+};
+
+const v$ = useVuelidate(rules, formData);
 
 const { mutate } = useMutation({
   mutationFn: createAuthor,
@@ -14,9 +23,12 @@ const { mutate } = useMutation({
   },
 });
 
-function handleSubmit(event) {
-  mutate({ name: nameInput.value });
-  event.target.reset();
+async function handleSubmit() {
+  const result = await v$.value.$validate();
+  if (!result) return;
+
+  mutate({ name: formData.name });
+  formData.name = "";
 }
 </script>
 
@@ -56,14 +68,21 @@ function handleSubmit(event) {
           <div class="modal-body">
             <form @submit.prevent="handleSubmit">
               <div class="mb-3">
-                <label for="title" class="form-label">Name</label>
+                <label for="name" class="form-label">Name</label>
                 <input
-                  v-model="nameInput"
+                  v-model="formData.name"
                   type="text"
                   class="form-control"
-                  id="title"
+                  id="name"
                   placeholder="Author name"
                 />
+                <span
+                  class="text-danger"
+                  v-for="error in v$.name.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
               </div>
 
               <button class="btn btn-primary w-100 mt-4" type="submit">

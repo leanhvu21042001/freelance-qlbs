@@ -1,13 +1,25 @@
 <script setup>
-import { useMutation, useQuery } from "@tanstack/vue-query";
-import { createCustomer, getCustomers } from "../../services/customers";
-import { ref } from "vue";
+import { useMutation } from "@tanstack/vue-query";
+import { createCustomer } from "../../services/customers";
+import { reactive } from "vue";
+import { required, minLength, email } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
 
 const { refetchCustomers } = defineProps(["refetchCustomers"]);
 
-const nameInput = ref("");
-const emailInput = ref("");
-const phoneInput = ref("");
+const formData = reactive({
+  name: "",
+  email: "",
+  phone: "",
+});
+
+const rules = {
+  name: { required, minLength: minLength(6) },
+  email: { required, email },
+  phone: { required, minLength: minLength(10) },
+};
+
+const v$ = useVuelidate(rules, formData);
 
 const { mutate } = useMutation({
   mutationFn: createCustomer,
@@ -16,13 +28,19 @@ const { mutate } = useMutation({
   },
 });
 
-function handleSubmit(event) {
+async function handleSubmit() {
+  const result = await v$.value.$validate();
+  if (!result) return;
+ 
   mutate({
-    name: nameInput.value,
-    email: emailInput.value,
-    phone: phoneInput.value,
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
   });
-  event.target.reset();
+
+  formData.name = "";
+  formData.email = "";
+  formData.phone = "";
 }
 </script>
 
@@ -64,34 +82,55 @@ function handleSubmit(event) {
               <div class="mb-3">
                 <label for="title" class="form-label">Name</label>
                 <input
-                  v-model="nameInput"
+                  v-model="formData.name"
                   type="text"
                   class="form-control"
                   id="title"
                   placeholder="Customer name"
                 />
+                <span
+                  class="text-danger"
+                  v-for="error in v$.name.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
               </div>
 
               <div class="mb-3">
                 <label for="title" class="form-label">Email</label>
                 <input
-                  v-model="emailInput"
+                  v-model="formData.email"
                   type="email"
                   class="form-control"
                   id="title"
                   placeholder="Customer email"
                 />
+                <span
+                  class="text-danger"
+                  v-for="error in v$.email.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
               </div>
 
               <div class="mb-3">
                 <label for="title" class="form-label">phone</label>
                 <input
-                  v-model="phoneInput"
+                  v-model="formData.phone"
                   type="text"
                   class="form-control"
                   id="title"
                   placeholder="Customer phone"
                 />
+                <span
+                  class="text-danger"
+                  v-for="error in v$.phone.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
               </div>
 
               <button class="btn btn-primary w-100 mt-4" type="submit">

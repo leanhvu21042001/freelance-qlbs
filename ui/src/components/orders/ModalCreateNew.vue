@@ -1,15 +1,34 @@
 <script setup>
 import { useMutation, useQuery } from "@tanstack/vue-query";
+import { reactive, ref } from "vue";
+import { required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+
 import { createOrder } from "../../services/orders";
-import { ref } from "vue";
 import { getCustomers } from "../../services/customers";
 import { getBooks } from "../../services/books";
 
 const { refetchOrders } = defineProps(["refetchOrders"]);
 
-const orderTitle = ref("");
-const customer = ref("");
-const selectBooks = ref([]);
+const formData = reactive({
+  title: "",
+  customer: "",
+  books: [],
+});
+
+const rules = {
+  title: {
+    required,
+  },
+  customer: {
+    required,
+  },
+  books: {
+    required,
+  },
+};
+
+const v$ = useVuelidate(rules, formData);
 
 const { data: books } = useQuery({
   queryKey: ["books"],
@@ -30,13 +49,18 @@ const { mutate } = useMutation({
   },
 });
 
-function handleSubmit(event) {
+async function handleSubmit() {
+  const result = await v$.value.$validate();
+  if (!result) return;
+
   mutate({
-    order_title: orderTitle.value,
-    customer_id: customer.value,
-    book_ids: selectBooks.value,
+    order_title: formData.title,
+    customer_id: formData.customer,
+    book_ids: formData.books,
   });
-  event.target.reset();
+  formData.title = "";
+  formData.customer = "";
+  formData.books = [];
 }
 </script>
 
@@ -75,18 +99,27 @@ function handleSubmit(event) {
               <div class="mb-3">
                 <label for="title" class="form-label">Order title</label>
                 <input
-                  v-model="orderTitle"
+                  v-model="formData.title"
                   type="text"
                   class="form-control"
                   id="title"
                   placeholder="Order title"
                 />
+                <span
+                  class="text-danger"
+                  v-for="error in v$.title.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
               </div>
               <div class="mb-3">
+                <label for="customer" class="form-label">Customer</label>
                 <select
+                  id="customer"
                   class="form-select"
                   aria-label="select customer"
-                  v-model="customer"
+                  v-model="formData.customer"
                 >
                   <option :disabled="true" :selected="true">
                     Select Customer
@@ -99,12 +132,18 @@ function handleSubmit(event) {
                     {{ customerOption.name }}
                   </option>
                 </select>
+                <span
+                  class="text-danger"
+                  v-for="error in v$.customer.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
               </div>
 
-              {{ selectBooks }}
               <div class="mb-3">
                 <select
-                  v-model="selectBooks"
+                  v-model="formData.books"
                   class="form-select"
                   aria-label="select books"
                   multiple
@@ -121,6 +160,13 @@ function handleSubmit(event) {
                     {{ bookOption.books.title }}
                   </option>
                 </select>
+                <span
+                  class="text-danger"
+                  v-for="error in v$.books.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
               </div>
 
               <button class="btn btn-primary w-100 mt-4" type="submit">

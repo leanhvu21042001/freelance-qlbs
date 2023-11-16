@@ -1,11 +1,23 @@
 <script setup>
 import { useMutation } from "@tanstack/vue-query";
 import { createUser } from "../../services/users";
-import { ref } from "vue";
+import { reactive } from "vue";
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 
 const { refetchUsers } = defineProps(["refetchUsers"]);
 
-const nameInput = ref("");
+const formData = reactive({
+  username: "",
+});
+
+const rules = {
+  username: {
+    required,
+  },
+};
+
+const v$ = useVuelidate(rules, formData);
 
 const { mutate } = useMutation({
   mutationFn: createUser,
@@ -14,11 +26,14 @@ const { mutate } = useMutation({
   },
 });
 
-function handleSubmit(event) {
+async function handleSubmit() {
+  const result = await v$.value.$validate();
+  if (!result) return;
   mutate({
-    username: nameInput.value,
+    username: formData.username,
   });
-  event.target.reset();
+
+  formData.username = "";
 }
 </script>
 
@@ -58,12 +73,19 @@ function handleSubmit(event) {
               <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input
-                  v-model="nameInput"
+                  v-model="formData.username"
                   type="email"
                   class="form-control"
                   id="username"
                   placeholder="User name"
                 />
+                <span
+                  class="text-danger"
+                  v-for="error in v$.username.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </span>
               </div>
 
               <button class="btn btn-primary w-100 mt-4" type="submit">
