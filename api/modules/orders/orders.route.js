@@ -4,28 +4,18 @@ const OrdersController = require("./orders.controller");
 const verifyToken = require("../../middlewares/verify-token.middleware");
 
 // Create a new order
-router.post("/orders", verifyToken, async (req, res) =>
-  OrdersController.createOrder(req, res)
-);
+router.post("/orders", verifyToken, OrdersController.createOrder);
 
 // Get all orders (requires authentication)
-router.get("/orders", verifyToken, async (req, res) =>
-  OrdersController.getOrders(req, res)
-);
+router.get("/orders", verifyToken, OrdersController.getOrders);
 
 // Get a specific order by ID (requires authentication)
-router.get("/orders/:id", verifyToken, async (req, res) =>
-  OrdersController.getOrderById(req, res)
-);
+router.get("/orders/:id", verifyToken, OrdersController.getOrderById);
 
 // Update a specific order by ID (requires authentication)
-router.put("/orders/:id", verifyToken, async (req, res) =>
-  OrdersController.updateOrderById(req, res)
-);
+router.put("/orders/:id", verifyToken, OrdersController.updateOrderById);
 
 // Delete a specific order by ID (requires authentication)
-router.delete("/orders/:id", verifyToken, async (req, res) =>
-  OrdersController.deleteOrderById(req, res)
-);
+router.delete("/orders/:id", verifyToken, OrdersController.deleteOrderById);
 
 module.exports = router;

@@ -6,13 +6,13 @@ exports.up = function (knex) {
   return knex.schema
     .createTable("authors", function (table) {
       table.increments("id").primary();
-      table.string("name");
+      table.string("name").unique();
       table.boolean("deleted").defaultTo(false);
       table.timestamps(true, true);
     })
     .createTable("books", function (table) {
       table.increments("id").primary();
-      table.string("title");
+      table.string("title").unique();
       table.integer("author_id").unsigned().references("id").inTable("authors");
       table.boolean("deleted").defaultTo(false);
       table.timestamps(true, true);

@@ -11,7 +11,7 @@ class AuthorsController {
     return AuthorsController.instance;
   }
 
-  async createAuthor(req, res) {
+  async createAuthor(req, res, next) {
     try {
       const authorData = req.body;
       const authorId = await authorsService.create(authorData);
@@ -20,7 +20,7 @@ class AuthorsController {
         .json({ id: authorId, message: "Author created successfully" });
     } catch (error) {
       console.error("Error creating author:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 
@@ -49,7 +49,7 @@ class AuthorsController {
     }
   }
 
-  async updateAuthorById(req, res) {
+  async updateAuthorById(req, res, next) {
     const authorId = req.params.id;
     const newData = req.body;
     try {
@@ -57,7 +57,7 @@ class AuthorsController {
       res.status(200).json({ message: "Author updated successfully" });
     } catch (error) {
       console.error("Error updating author:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 

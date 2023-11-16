@@ -1,6 +1,6 @@
 <script setup>
 import { useMutation } from "@tanstack/vue-query";
-
+import { notify } from "@kyvg/vue3-notification";
 import { deleteCustomer } from "../../services/customers";
 
 const { customers, refetchCustomers } = defineProps([
@@ -12,6 +12,9 @@ const { mutate } = useMutation({
   mutationFn: deleteCustomer,
   onSuccess: () => {
     refetchCustomers();
+     notify({
+      title: "Deleted 🎉",
+    });
   },
 });
 

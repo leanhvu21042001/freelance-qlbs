@@ -6,6 +6,8 @@ import { reactive, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import { notify } from "@kyvg/vue3-notification";
+
 const route = useRoute();
 
 const bookId = ref(route.params.id);
@@ -39,6 +41,17 @@ watchEffect(() => {
 
 const { mutate } = useMutation({
   mutationFn: editBook,
+  onSuccess: () => {
+    notify({
+      title: "Updated 🎉",
+    });
+  },
+  onError: () => {
+    notify({
+      type: "error",
+      title: "Edit Not Success",
+    });
+  },
 });
 
 async function handleSubmit() {

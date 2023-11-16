@@ -25,8 +25,9 @@ request.interceptors.response.use(
   async (error) => {
     const { config, response } = error;
     if (config?.url !== "/login" && response?.status === 401) {
-      // removeToken();
+      removeToken();
     }
+
     return Promise.reject(error);
   }
 );

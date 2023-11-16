@@ -11,6 +11,9 @@ function convertToCustomError(err) {
   }
 
   // Add more conversions as needed
+  if (err.code === "ER_DUP_ENTRY") {
+    return new CustomError("Duplicate entry error", 409);
+  }
 
   // If no specific conversion is matched, create a generic error
   return new CustomError("Internal Server Error", 500);

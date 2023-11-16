@@ -11,7 +11,7 @@ class OrdersController {
     return OrdersController.instance;
   }
 
-  async createOrder(req, res) {
+  async createOrder(req, res, next) {
     try {
       const orderData = req.body;
       const orderId = await ordersService.create(orderData);
@@ -20,7 +20,7 @@ class OrdersController {
         .json({ id: orderId, message: "Order created successfully" });
     } catch (error) {
       console.error("Error creating order:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 
@@ -50,7 +50,7 @@ class OrdersController {
     }
   }
 
-  async updateOrderById(req, res) {
+  async updateOrderById(req, res, next) {
     const orderId = req.params.id;
     const newData = req.body;
     try {
@@ -58,7 +58,7 @@ class OrdersController {
       res.status(200).json({ message: "Order updated successfully" });
     } catch (error) {
       console.error("Error updating order:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 

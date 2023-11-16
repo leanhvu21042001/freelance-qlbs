@@ -1,9 +1,13 @@
 import request from "./request";
 
 export const getAuthors = async () => {
+ try {
   const res = await request.get("/authors");
 
   return res;
+ } catch (error) {
+  
+ }
 };
 
 export const getSingleAuthor = async (authorId) => {

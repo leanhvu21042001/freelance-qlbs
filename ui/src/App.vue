@@ -5,6 +5,7 @@ import AppHeader from "./components/AppHeader.vue";
 
 <template>
   <div id="app">
+    <notifications />
     <AppHeader />
     <!-- route outlet -->
     <!-- component matched by the route will render here -->

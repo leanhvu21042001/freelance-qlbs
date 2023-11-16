@@ -1,9 +1,10 @@
 <script setup>
 import { useMutation } from "@tanstack/vue-query";
-import { createAuthor } from "../../services/authors";
+import { notify } from "@kyvg/vue3-notification";
 import { reactive, ref } from "vue";
 import { required, minLength, email } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import { createAuthor } from "../../services/authors";
 
 const { refetchAuthors } = defineProps(["refetchAuthors"]);
 
@@ -20,6 +21,15 @@ const { mutate } = useMutation({
   mutationFn: createAuthor,
   onSuccess: () => {
     refetchAuthors();
+    notify({
+      title: "Created 🎉",
+    });
+  },
+  onError: () => {
+    notify({
+      type: "error",
+      title: "Create Not Success",
+    });
   },
 });
 

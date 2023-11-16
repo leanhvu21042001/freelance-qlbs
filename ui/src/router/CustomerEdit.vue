@@ -1,6 +1,7 @@
 <script setup>
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import { reactive, ref, watchEffect } from "vue";
+import { notify } from "@kyvg/vue3-notification";
 import { useRoute } from "vue-router";
 import { editCustomer, getSingleCustomer } from "../services/customers";
 import { required, minLength, email } from "@vuelidate/validators";
@@ -38,6 +39,17 @@ watchEffect(() => {
 
 const { mutate } = useMutation({
   mutationFn: editCustomer,
+  onSuccess: () => {
+    notify({
+      title: "Updated 🎉",
+    });
+  },
+  onError: () => {
+    notify({
+      type: "error",
+      title: "Edit Not Success",
+    });
+  },
 });
 
 async function handleSubmit() {

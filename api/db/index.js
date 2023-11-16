@@ -6,10 +6,10 @@ const db = knex(knexFile[environment]);
 
 db.raw("SELECT 1")
   .then(() => {
-    console.log("PostgreSQL connected");
+    console.log("MYSQL connected");
   })
   .catch((e) => {
-    console.log("PostgreSQL not connected");
+    console.log("MYSQL not connected");
     console.error(e);
   });
 

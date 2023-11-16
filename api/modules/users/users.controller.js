@@ -13,7 +13,7 @@ class UsersController {
     return UsersController.instance;
   }
 
-  async createUser(req, res) {
+  async createUser(req, res, next) {
     try {
       const userData = req.body;
       const userId = await usersService.create(userData);
@@ -22,7 +22,7 @@ class UsersController {
         .json({ id: userId, message: "User created successfully" });
     } catch (error) {
       console.error("Error creating user:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 
@@ -51,7 +51,7 @@ class UsersController {
     }
   }
 
-  async updateUserById(req, res) {
+  async updateUserById(req, res, next) {
     const userId = req.params.id;
     const newData = req.body;
     try {
@@ -59,7 +59,7 @@ class UsersController {
       res.status(200).json({ message: "User updated successfully" });
     } catch (error) {
       console.error("Error updating user:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 

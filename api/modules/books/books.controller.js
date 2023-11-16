@@ -11,7 +11,7 @@ class BooksController {
     return BooksController.instance;
   }
 
-  async createBook(req, res) {
+  async createBook(req, res, next) {
     try {
       const bookData = req.body;
       const bookId = await booksService.create(bookData);
@@ -20,7 +20,7 @@ class BooksController {
         .json({ id: bookId, message: "Book created successfully" });
     } catch (error) {
       console.error("Error creating book:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 
@@ -49,7 +49,7 @@ class BooksController {
     }
   }
 
-  async updateBookById(req, res) {
+  async updateBookById(req, res, next) {
     const bookId = req.params.id;
     const newData = req.body;
     try {
@@ -57,7 +57,7 @@ class BooksController {
       res.status(200).json({ message: "Book updated successfully" });
     } catch (error) {
       console.error("Error updating book:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 

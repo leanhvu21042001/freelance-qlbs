@@ -4,28 +4,26 @@ const CustomersController = require("./customers.controller"); // Adjust the pat
 const verifyToken = require("../../middlewares/verify-token.middleware");
 
 // Create a new customer
-router.post("/customers", verifyToken, async (req, res) =>
-  CustomersController.createCustomer(req, res)
-);
+router.post("/customers", verifyToken, CustomersController.createCustomer);
 
 // Get all customers
-router.get("/customers", verifyToken, async (req, res) =>
-  CustomersController.getCustomers(req, res)
-);
+router.get("/customers", verifyToken, CustomersController.getCustomers);
 
 // Get a specific customer by ID
-router.get("/customers/:id", verifyToken, async (req, res) =>
-  CustomersController.getCustomerById(req, res)
-);
+router.get("/customers/:id", verifyToken, CustomersController.getCustomerById);
 
 // Update a specific customer by ID
-router.put("/customers/:id", verifyToken, async (req, res) =>
-  CustomersController.updateCustomerById(req, res)
+router.put(
+  "/customers/:id",
+  verifyToken,
+  CustomersController.updateCustomerById
 );
 
 // Delete a specific customer by ID
-router.delete("/customers/:id", verifyToken, async (req, res) =>
-  CustomersController.deleteCustomerById(req, res)
+router.delete(
+  "/customers/:id",
+  verifyToken,
+  CustomersController.deleteCustomerById
 );
 
 module.exports = router;

@@ -4,28 +4,18 @@ const BooksController = require("./books.controller"); // Adjust the path accord
 const verifyToken = require("../../middlewares/verify-token.middleware");
 
 // Create a new book
-router.post("/books", verifyToken, async (req, res) =>
-  BooksController.createBook(req, res)
-);
+router.post("/books", verifyToken, BooksController.createBook);
 
 // Get all books
-router.get("/books", verifyToken, async (req, res) =>
-  BooksController.getBooks(req, res)
-);
+router.get("/books", verifyToken, BooksController.getBooks);
 
 // Get a specific book by ID
-router.get("/books/:id", verifyToken, async (req, res) =>
-  BooksController.getBookById(req, res)
-);
+router.get("/books/:id", verifyToken, BooksController.getBookById);
 
 // Update a specific book by ID
-router.put("/books/:id", verifyToken, async (req, res) =>
-  BooksController.updateBookById(req, res)
-);
+router.put("/books/:id", verifyToken, BooksController.updateBookById);
 
 // Delete a specific book by ID
-router.delete("/books/:id", verifyToken, async (req, res) =>
-  BooksController.deleteBookById(req, res)
-);
+router.delete("/books/:id", verifyToken, BooksController.deleteBookById);
 
 module.exports = router;

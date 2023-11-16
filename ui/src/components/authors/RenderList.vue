@@ -1,6 +1,6 @@
 <script setup>
 import { useMutation } from "@tanstack/vue-query";
-
+import { notify } from "@kyvg/vue3-notification";
 import { deleteAuthor } from "../../services/authors";
 
 const { authors, refetchAuthors } = defineProps(["authors", "refetchAuthors"]);
@@ -9,6 +9,9 @@ const { mutate } = useMutation({
   mutationFn: deleteAuthor,
   onSuccess: () => {
     refetchAuthors();
+     notify({
+      title: "Deleted 🎉",
+    });
   },
 });
 

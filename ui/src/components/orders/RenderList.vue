@@ -1,5 +1,6 @@
 <script setup>
 import moment from "moment";
+import { notify } from "@kyvg/vue3-notification";
 import { useMutation } from "@tanstack/vue-query";
 
 import { deleteOrder } from "../../services/orders";
@@ -10,6 +11,9 @@ const { mutate } = useMutation({
   mutationFn: deleteOrder,
   onSuccess: () => {
     refetchOrders();
+    notify({
+      title: "Deleted 🎉",
+    });
   },
 });
 

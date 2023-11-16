@@ -5,6 +5,7 @@ import { useRoute } from "vue-router";
 import { editAuthor, getSingleAuthor } from "../services/authors";
 import { required, minLength, email } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import { notify } from "@kyvg/vue3-notification";
 
 const route = useRoute();
 
@@ -32,6 +33,17 @@ watchEffect(() => {
 
 const { mutate } = useMutation({
   mutationFn: editAuthor,
+   onSuccess: () => {
+    notify({
+      title: "Updated 🎉",
+    });
+  },
+  onError: () => {
+    notify({
+      type: "error",
+      title: "Edit Not Success",
+    });
+  },
 });
 
 async function handleSubmit() {

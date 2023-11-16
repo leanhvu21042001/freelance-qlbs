@@ -1,6 +1,7 @@
 <script setup>
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import { reactive, ref } from "vue";
+import { notify } from "@kyvg/vue3-notification";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 
@@ -46,6 +47,15 @@ const { mutate } = useMutation({
   mutationFn: createOrder,
   onSuccess: () => {
     refetchOrders();
+    notify({
+      title: "Created 🎉",
+    });
+  },
+  onError: () => {
+    notify({
+      type: "error",
+      title: "Create Not Success",
+    });
   },
 });
 

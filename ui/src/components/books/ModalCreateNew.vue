@@ -1,10 +1,11 @@
 <script setup>
 import { useMutation, useQuery } from "@tanstack/vue-query";
-import { getAuthors } from "../../services/authors";
-import { createBook } from "../../services/books";
+import { notify } from "@kyvg/vue3-notification";
 import { reactive, ref } from "vue";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import { getAuthors } from "../../services/authors";
+import { createBook } from "../../services/books";
 
 const { refetchBooks } = defineProps(["refetchBooks"]);
 
@@ -28,6 +29,15 @@ const { mutate } = useMutation({
   mutationFn: createBook,
   onSuccess: () => {
     refetchBooks();
+    notify({
+      title: "Created 🎉",
+    });
+  },
+  onError: () => {
+    notify({
+      type: "error",
+      title: "Create Not Success",
+    });
   },
 });
 

@@ -1,6 +1,6 @@
 <script setup>
 import { useMutation } from "@tanstack/vue-query";
-
+import { notify } from "@kyvg/vue3-notification";
 import { deleteBook } from "../../services/books";
 
 const { books, refetchBooks } = defineProps(["books", "refetchBooks"]);
@@ -9,6 +9,9 @@ const { mutate } = useMutation({
   mutationFn: deleteBook,
   onSuccess: () => {
     refetchBooks();
+     notify({
+      title: "Deleted 🎉",
+    });
   },
 });
 

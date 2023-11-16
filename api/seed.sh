@@ -1,1 +1,0 @@
-knex seed:run --specific=first.js

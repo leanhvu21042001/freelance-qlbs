@@ -1,9 +1,10 @@
 <script setup>
 import { useMutation } from "@tanstack/vue-query";
-import { createUser } from "../../services/users";
+import { notify } from "@kyvg/vue3-notification";
 import { reactive } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import { createUser } from "../../services/users";
 
 const { refetchUsers } = defineProps(["refetchUsers"]);
 
@@ -23,6 +24,15 @@ const { mutate } = useMutation({
   mutationFn: createUser,
   onSuccess: () => {
     refetchUsers();
+    notify({
+      title: "Created 🎉",
+    });
+  },
+  onError: () => {
+    notify({
+      type: "error",
+      title: "Create Not Success",
+    });
   },
 });
 

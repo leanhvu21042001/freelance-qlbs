@@ -1,6 +1,7 @@
 <script setup>
 import moment from "moment";
 import { useMutation } from "@tanstack/vue-query";
+import { notify } from "@kyvg/vue3-notification";
 
 import { deleteUser } from "../../services/users";
 
@@ -10,6 +11,9 @@ const { mutate } = useMutation({
   mutationFn: deleteUser,
   onSuccess: () => {
     refetchUsers();
+    notify({
+      title: "Deleted 🎉",
+    });
   },
 });
 

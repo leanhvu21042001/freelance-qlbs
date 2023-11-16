@@ -1,9 +1,10 @@
 <script setup>
 import { useMutation } from "@tanstack/vue-query";
-import { createCustomer } from "../../services/customers";
 import { reactive } from "vue";
+import { notify } from "@kyvg/vue3-notification";
 import { required, minLength, email } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import { createCustomer } from "../../services/customers";
 
 const { refetchCustomers } = defineProps(["refetchCustomers"]);
 
@@ -25,13 +26,22 @@ const { mutate } = useMutation({
   mutationFn: createCustomer,
   onSuccess: () => {
     refetchCustomers();
+    notify({
+      title: "Created 🎉",
+    });
+  },
+  onError: () => {
+    notify({
+      type: "error",
+      title: "Create Not Success",
+    });
   },
 });
 
 async function handleSubmit() {
   const result = await v$.value.$validate();
   if (!result) return;
- 
+
   mutate({
     name: formData.name,
     email: formData.email,

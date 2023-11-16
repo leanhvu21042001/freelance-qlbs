@@ -11,7 +11,7 @@ class CustomersController {
     return CustomersController.instance;
   }
 
-  async createCustomer(req, res) {
+  async createCustomer(req, res, next) {
     try {
       const customerData = req.body;
       const customerId = await customersService.create(customerData);
@@ -20,7 +20,7 @@ class CustomersController {
         .json({ id: customerId, message: "Customer created successfully" });
     } catch (error) {
       console.error("Error creating customer:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 
@@ -57,7 +57,7 @@ class CustomersController {
       res.status(200).json({ message: "Customer updated successfully" });
     } catch (error) {
       console.error("Error updating customer:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 

@@ -1,5 +1,6 @@
 <script setup>
 import { useMutation, useQuery } from "@tanstack/vue-query";
+import { notify } from "@kyvg/vue3-notification";
 import { reactive, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import { required } from "@vuelidate/validators";
@@ -34,6 +35,17 @@ watchEffect(() => {
 
 const { mutate } = useMutation({
   mutationFn: editUser,
+  onSuccess: () => {
+    notify({
+      title: "Updated 🎉",
+    });
+  },
+  onError: () => {
+    notify({
+      type: "error",
+      title: "Edit Not Success",
+    });
+  },
 });
 
 async function handleSubmit() {
